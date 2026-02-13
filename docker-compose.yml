@@ -1,0 +1,38 @@
+services:
+  waha:
+    image: devlikeapro/waha:arm
+    container_name: waha
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - waha_data:/app/data
+      - ./.sessions:/app/.sessions
+    env_file:
+      - .env
+  
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+    env_file:
+      - .env
+  
+  # task-runners:
+  #   image: n8nio/runners:1.111.0
+  #   container_name: n8n-runners
+  #   environment:
+  #     - N8N_RUNNERS_TASK_BROKER_URI=http://n8n-main:5679
+  #     - N8N_RUNNERS_AUTH_TOKEN=your-secret-here
+  #     # etc.
+  #   depends_on:
+  #     - n8n
+
+volumes:
+  waha_data:
+    driver: local
+  n8n_data:
+    driver: local
